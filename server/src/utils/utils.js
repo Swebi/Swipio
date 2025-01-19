@@ -37,7 +37,9 @@ export const formatProject = (source) => {
       (section) => section.title === "Challenges we ran into"
     )?.content || "N/A";
 
-  const github = source.links || "N/A";
+  const github = source.links.filter((link) =>
+    link.startsWith("https://github.com")
+  );
 
   const prizes =
     source.prizes.map((prize) => ({
