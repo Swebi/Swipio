@@ -4,6 +4,14 @@ import { Motion } from "motion-v";
 import { defineProps } from "vue";
 import SpotlightCard from "@/components/SpotlightCard.vue";
 import { useToast } from "@/components/ui/toast/use-toast";
+import StatusIcon from "./StatusIcon.vue";
+
+const props = defineProps({
+  project: {
+    type: Object,
+    required: true,
+  },
+});
 
 const { toast } = useToast();
 
@@ -21,12 +29,12 @@ const crossPathA = useTransform(x, [-10, -55], [0, 1]);
 const crossPathB = useTransform(x, [-50, -100], [0, 1]);
 
 const handleDragEnd = () => {
-  if (x.get() >= 70) {
+  if (x.get() >= 50) {
     toast({
       title: "Project Saved!",
     });
   }
-  if (x.get() <= -70) {
+  if (x.get() <= -50) {
     toast({
       title: "Project Skipped!",
     });
@@ -36,61 +44,79 @@ const handleDragEnd = () => {
 
 <template>
   <Motion
-    class="w-full h-full md:w-[700px] md:h-[700px] rounded-lg flex items-start justify-center relative overflow-hidden md:overflow-visible"
+    class="w-full h-full md:h-[700px] rounded-lg flex items-start justify-center relative overflow-x-hidden no-scrollbar"
   >
     <Motion
       :style="{ x }"
       drag="x"
       :drag-constraints="{ left: 0, right: 0 }"
-      class="w-[75%] h-[80%] md:w-[400px] rounded-lg border-white/10"
+      class="w-[90%] max-h-fit md:w-[400px] max-w-[400px] rounded-lg"
       @drag-end="handleDragEnd"
     >
       <SpotlightCard color="rgba(255, 255, 255, 0.05)">
-        <div class="w-full h-[65vh] md:h-[500px]">
-          <h1 class="text-white">Hello</h1>
+        <div class="w-full h-fit p-6 pb-10 flex flex-col gap-4 no-scrollbar">
+          <!-- Header -->
+          <div class="space-y-2">
+            <h2 class="text-2xl font-bold text-white">{{ project.name }}</h2>
+            <p class="text-sm text-gray-300">{{ project.tagline }}</p>
+          </div>
+
+          <!-- Technologies -->
+          <div class="space-y-2">
+            <h3 class="font-semibold text-white">Technologies Used:</h3>
+            <div class="flex flex-wrap gap-2">
+              <span
+                v-for="(tech, index) in project.tags"
+                :key="index"
+                class="px-2 py-1 text-xs rounded-full bg-white/10 text-white"
+              >
+                {{ tech }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Problem -->
+          <div class="space-y-2">
+            <h3 class="font-semibold text-white">Problem Solved:</h3>
+            <p class="text-sm text-gray-300">{{ project.problem }}</p>
+          </div>
+
+          <!-- Challenges -->
+          <div class="space-y-2">
+            <h3 class="font-semibold text-white">Challenges Faced:</h3>
+            <p class="text-sm text-gray-300">{{ project.challenges }}</p>
+          </div>
+
+          <!-- Footer -->
+          <div class="flex justify-between pt-4">
+            <a
+              :href="project.github"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center px-3 py-1.5 text-sm rounded-md bg-white/10 hover:bg-white/20 transition-colors text-white"
+            >
+              <Github class="w-4 h-4 mr-2" />
+              GitHub
+            </a>
+            <a
+              :href="project.devfolio"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center px-3 py-1.5 text-sm rounded-md bg-white/10 hover:bg-white/20 transition-colors text-white"
+            >
+              <ExternalLink class="w-4 h-4 mr-2" />
+              Devfolio
+            </a>
+          </div>
         </div>
       </SpotlightCard>
     </Motion>
 
-    <svg
-      class="progress-icon absolute w-10 h-10 z-20 bottom-16"
-      viewBox="0 0 50 50"
-    >
-      <Motion
-        as="path"
-        fill="none"
-        stroke-width="2"
-        :stroke="color"
-        d="M 0, 20 a 20, 20 0 1,0 40,0 a 20, 20 0 1,0 -40,0"
-        :style="{ transform: 'translate(5px, 5px)' }"
-      />
-      <Motion
-        as="path"
-        fill="none"
-        stroke-width="2"
-        :stroke="color"
-        d="M14,26 L 22,33 L 35,16"
-        stroke-dasharray="0 1"
-        :style="{ pathLength: tickPath }"
-      />
-      <Motion
-        as="path"
-        fill="none"
-        stroke-width="2"
-        :stroke="color"
-        d="M17,17 L33,33"
-        stroke-dasharray="0 1"
-        :style="{ pathLength: crossPathA }"
-      />
-      <Motion
-        as="path"
-        fill="none"
-        stroke-width="2"
-        :stroke="color"
-        d="M33,17 L17,33"
-        stroke-dasharray="0 1"
-        :style="{ pathLength: crossPathB }"
-      />
-    </svg>
+    <StatusIcon
+      :tickPath="tickPath"
+      :crossPathA="crossPathA"
+      :crossPathB="crossPathB"
+      :color="color"
+    />
   </Motion>
 </template>
