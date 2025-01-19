@@ -5,13 +5,7 @@ import { getProject } from "./services/project.service.js";
 
 dotenv.config();
 
-const fastify = Fastify({
-  logger: {
-    transport: {
-      target: "pino-pretty",
-    },
-  },
-});
+const fastify = Fastify({});
 
 fastify.setErrorHandler((error, request, reply) => {
   fastify.log.error(error);

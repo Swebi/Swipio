@@ -1,48 +1,39 @@
 import instance from "../config/axios.js";
-import { getConfig } from "../utils/config.js";
+import { formatProject, getProjectConfig } from "../utils/utils.js";
 import { getHackathon } from "./hackathon.service.js";
 
 const getProject = async (request, reply) => {
   try {
     const slug = await getHackathon();
-    console.log(slug);
-    const hitsConfig = getConfig(0, slug);
-    console.log(hitsConfig);
+    console.log(`Fetching projects for ${slug}`);
 
+    const hitsConfig = getProjectConfig(0, slug);
     const hitsResponse = await instance.post(`/projects`, hitsConfig);
 
     const hits = hitsResponse.data.hits.total.value;
+    console.log(`Total projects fetched: ${hits}`);
 
     if (hits === 0) {
-      console.log("0 PROJS");
+      console.log("0 Projects fetched");
       throw {
         statusCode: 404,
         message: "Could not get project",
       };
     }
 
-    console.log(hits);
+    const randomHit = Math.floor(Math.random() * hits);
+    console.log(`Random Hit: ${randomHit}`);
 
-    const randomHit = Math.floor(Math.random() * (hits + 1));
-    console.log(randomHit);
+    const projectConfig = getProjectConfig(randomHit, slug);
+    const projectResponse = await instance.post(`/projects`, projectConfig);
 
-    const projectConfig = getConfig(randomHit, slug);
+    const source = await projectResponse.data.hits.hits[0]._source;
 
-    console.log(projectConfig);
+    const project = formatProject(source);
 
-    const response = await instance.post(`/projects`, projectConfig);
-
-    const randomInt = Math.floor(Math.random() * (10 + 1));
-
-    console.log(randomInt);
-
-    const data = await response.data.hits.hits[randomInt]._source;
-
-    // console.log(data);
-
-    return data;
+    return project;
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     throw {
       statusCode: 404,
       message: "Could not get project",
