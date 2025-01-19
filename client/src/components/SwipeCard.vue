@@ -1,17 +1,14 @@
 <script setup>
-import { useMotionValue, useTransform } from "motion-v";
+import { useMotionValue, useTransform, useMotionValueEvent } from "motion-v";
 import { Motion } from "motion-v";
 import { defineProps } from "vue";
 import SpotlightCard from "@/components/SpotlightCard.vue";
+import { useToast } from "@/components/ui/toast/use-toast";
+
+const { toast } = useToast();
 
 const x = useMotionValue(0);
 const xInput = [-100, 0, 100];
-
-const background = useTransform(x, xInput, [
-  "linear-gradient(180deg, #ff008c 0%, rgb(211, 9, 225) 100%)",
-  "linear-gradient(180deg, #7700ff 0%, rgb(68, 0, 255) 100%)",
-  "linear-gradient(180deg, rgb(230, 255, 0) 0%, rgb(3, 209, 0) 100%)",
-]);
 
 const color = useTransform(x, xInput, [
   "rgb(252, 3, 3)",
@@ -22,20 +19,34 @@ const color = useTransform(x, xInput, [
 const tickPath = useTransform(x, [10, 100], [0, 1]);
 const crossPathA = useTransform(x, [-10, -55], [0, 1]);
 const crossPathB = useTransform(x, [-50, -100], [0, 1]);
+
+const handleDragEnd = () => {
+  if (x.get() >= 70) {
+    toast({
+      title: "Project Saved!",
+    });
+  }
+  if (x.get() <= -70) {
+    toast({
+      title: "Project Skipped!",
+    });
+  }
+};
 </script>
 
 <template>
   <Motion
-    class="w-full h-full lg:w-[700px] lg:h-[700px] rounded-lg flex items-start justify-center relative overflow-hidden lg:overflow-visible"
+    class="w-full h-full md:w-[700px] md:h-[700px] rounded-lg flex items-start justify-center relative overflow-hidden md:overflow-visible"
   >
     <Motion
       :style="{ x }"
       drag="x"
       :drag-constraints="{ left: 0, right: 0 }"
-      class="w-[75%] h-[80%] lg:w-[400px] rounded-lg border-white/10"
+      class="w-[75%] h-[80%] md:w-[400px] rounded-lg border-white/10"
+      @drag-end="handleDragEnd"
     >
-      <SpotlightCard>
-        <div class="w-full h-[65vh]  lg:h-[500px]">
+      <SpotlightCard color="rgba(255, 255, 255, 0.05)">
+        <div class="w-full h-[65vh] md:h-[500px]">
           <h1 class="text-white">Hello</h1>
         </div>
       </SpotlightCard>
