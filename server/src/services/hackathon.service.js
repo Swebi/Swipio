@@ -1,7 +1,7 @@
 import instance from "../config/axios.js";
 import { getHackathonConfig } from "../utils/utils.js";
 
-const getHackathon = async (request, reply) => {
+const handleGetHackathon = async (request, reply) => {
   try {
     const hitsConfig = getHackathonConfig(0);
     const hitsResponse = await instance.post(`/hackathons`, hitsConfig);
@@ -31,4 +31,4 @@ const getHackathon = async (request, reply) => {
   }
 };
 
-export { getHackathon };
+export { handleGetHackathon };

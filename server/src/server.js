@@ -1,7 +1,7 @@
 import Fastify from "fastify";
 import dotenv from "dotenv";
-import { getHackathon } from "./services/hackathon.service.js";
-import { getProject } from "./services/project.service.js";
+import { hackathonRouter } from "./routes/hackathon.router.js";
+import { projectRouter } from "./routes/project.router.js";
 
 dotenv.config();
 
@@ -16,24 +16,11 @@ fastify.setErrorHandler((error, request, reply) => {
 });
 
 fastify.get("/", (request, reply) => {
-  reply.send({ hello: "" });
+  reply.send("Hello World");
 });
 
-fastify.get("/hackathon", async (request, reply) => {
-  const slug = await getHackathon();
-  reply.status(200).send({
-    success: true,
-    data: slug,
-  });
-});
-
-fastify.get("/project", async (request, reply) => {
-  const project = await getProject();
-  reply.status(200).send({
-    success: true,
-    data: project,
-  });
-});
+fastify.register(hackathonRouter, { prefix: "/api/hackathon" });
+fastify.register(projectRouter, { prefix: "/api/project" });
 
 fastify.listen({ port: 3000 }, (err, address) => {
   if (err) {

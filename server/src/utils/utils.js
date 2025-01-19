@@ -22,7 +22,7 @@ export const getHackathonConfig = (from) => {
 };
 
 export const formatProject = (source) => {
-  const slug = source.slug;
+  const devfolio = `https://devfolio.co/projects/${source.slug}`;
   const name = source.name || "N/A";
   const tagline = source.tagline || "N/A";
   const tags = source.hashtags?.map((hashtag) => hashtag.name);
@@ -49,7 +49,7 @@ export const formatProject = (source) => {
     })) || [];
 
   return {
-    slug,
+    devfolio,
     name,
     tagline,
     tags,

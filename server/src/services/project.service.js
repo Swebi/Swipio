@@ -1,10 +1,10 @@
 import instance from "../config/axios.js";
 import { formatProject, getProjectConfig } from "../utils/utils.js";
-import { getHackathon } from "./hackathon.service.js";
+import { handleGetHackathon } from "./hackathon.service.js";
 
-const getProject = async (request, reply) => {
+const handleGetProject = async (request, reply) => {
   try {
-    const slug = await getHackathon();
+    const slug = await handleGetHackathon();
     console.log(`Fetching projects for ${slug}`);
 
     const hitsConfig = getProjectConfig(0, slug);
@@ -41,4 +41,4 @@ const getProject = async (request, reply) => {
   }
 };
 
-export { getProject };
+export { handleGetProject };
