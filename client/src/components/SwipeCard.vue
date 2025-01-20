@@ -5,6 +5,7 @@ import { defineProps } from "vue";
 import SpotlightCard from "@/components/SpotlightCard.vue";
 import { useToast } from "@/components/ui/toast/use-toast";
 import StatusIcon from "./StatusIcon.vue";
+import Button from "./ui/button/Button.vue";
 
 const props = defineProps({
   project: {
@@ -28,29 +29,47 @@ const tickPath = useTransform(x, [10, 100], [0, 1]);
 const crossPathA = useTransform(x, [-10, -55], [0, 1]);
 const crossPathB = useTransform(x, [-50, -100], [0, 1]);
 
+const handleSave = () => {
+  toast({
+    title: "Project Saved!",
+  });
+};
+
+const handleSkip = () => {
+  toast({
+    title: "Project Skipped!",
+  });
+};
+
 const handleDragEnd = () => {
   if (x.get() >= 50) {
-    toast({
-      title: "Project Saved!",
-    });
+    handleSave();
   }
   if (x.get() <= -50) {
-    toast({
-      title: "Project Skipped!",
-    });
+    handleSkip();
   }
 };
 </script>
 
 <template>
   <Motion
-    class="w-full h-full md:h-[700px] rounded-lg flex items-start justify-center relative overflow-x-hidden no-scrollbar"
+    class="w-full rounded-lg flex flex-col gap-4 flex-grow overflow-x-hidden md:overflow-x-visible items-center justify-center relative no-scrollbar py-8"
   >
+    <div class="w-[90%] md:w-[400px] h-fit flex justify-between px-3">
+      <Button class="px-5" @click="handleSkip">Skip</Button>
+      <StatusIcon
+        :tickPath="tickPath"
+        :crossPathA="crossPathA"
+        :crossPathB="crossPathB"
+        :color="color"
+      />
+      <Button class="px-5" @click="handleSave">Save</Button>
+    </div>
     <Motion
       :style="{ x }"
       drag="x"
       :drag-constraints="{ left: 0, right: 0 }"
-      class="w-[90%] max-h-fit md:w-[400px] max-w-[400px] rounded-lg"
+      class="w-[90%] h-fit md:w-[400px] max-w-[400px] rounded-lg"
       @drag-end="handleDragEnd"
     >
       <SpotlightCard color="rgba(255, 255, 255, 0.05)">
@@ -111,12 +130,5 @@ const handleDragEnd = () => {
         </div>
       </SpotlightCard>
     </Motion>
-
-    <StatusIcon
-      :tickPath="tickPath"
-      :crossPathA="crossPathA"
-      :crossPathB="crossPathB"
-      :color="color"
-    />
   </Motion>
 </template>

@@ -22,10 +22,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <svg
-    class="progress-icon absolute w-10 h-10 z-20 bottom-14"
-    viewBox="0 0 50 50"
-  >
+  <svg class="progress-icon w-10 h-10 z-20" viewBox="0 0 50 50">
     <Motion
       as="path"
       fill="none"
