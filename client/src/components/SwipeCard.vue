@@ -1,6 +1,7 @@
 <script setup>
 import { useMotionValue, useTransform, useMotionValueEvent } from "motion-v";
 import { Motion } from "motion-v";
+import { animate } from "motion-v";
 import { defineProps } from "vue";
 import SpotlightCard from "@/components/SpotlightCard.vue";
 import { useToast } from "@/components/ui/toast/use-toast";
@@ -14,6 +15,7 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  saved: Boolean,
 });
 
 const emit = defineEmits(["fetch"]);
@@ -33,18 +35,30 @@ const tickPath = useTransform(x, [10, 100], [0, 1]);
 const crossPathA = useTransform(x, [-10, -55], [0, 1]);
 const crossPathB = useTransform(x, [-50, -100], [0, 1]);
 
-const handleSave = () => {
-  toast({
-    title: "Project Saved!",
+const handleSave = (project) => {
+  animate(x, 100, { duration: 0.4 }).then(() => {
+    let existingProjects = JSON.parse(localStorage.getItem("swipio"));
+    if (existingProjects == null) existingProjects = [];
+
+    existingProjects.push(project);
+
+    localStorage.setItem("swipio", JSON.stringify(existingProjects));
+    toast({
+      title: "Project Saved!",
+    });
+    emit("fetch");
+    animate(x, 0, { duration: 0.2 });
   });
-  emit("fetch");
 };
 
 const handleSkip = () => {
-  toast({
-    title: "Project Skipped!",
+  animate(x, -100, { duration: 0.4 }).then(() => {
+    toast({
+      title: "Project Skipped!",
+    });
+    emit("fetch");
+    animate(x, 0, { duration: 0.2 });
   });
-  emit("fetch");
 };
 
 const handleDragEnd = () => {
@@ -61,7 +75,10 @@ const handleDragEnd = () => {
   <Motion
     class="w-full rounded-lg flex flex-col gap-4 overflow-x-hidden md:overflow-x-visible items-center justify-center no-scrollbar py-4 md:py-8"
   >
-    <div class="w-[90%] sm:w-[400px] h-fit flex justify-between px-3">
+    <div
+      class="w-[90%] sm:w-[500px] h-fit flex justify-between px-3"
+      v-if="!saved"
+    >
       <Button @click="handleSkip" :disabled="loading">Skip</Button>
       <StatusIcon
         :tickPath="tickPath"
@@ -69,15 +86,18 @@ const handleDragEnd = () => {
         :crossPathB="crossPathB"
         :color="color"
       />
-      <Button class="px-5 select-none" :disabled="loading" @click="handleSave"
+      <Button
+        class="px-5 select-none"
+        :disabled="loading"
+        @click="handleSave(project)"
         >Save</Button
       >
     </div>
     <Motion
       :style="{ x }"
-      drag="x"
+      :drag="saved ? false : 'x'"
       :drag-constraints="{ left: 0, right: 0 }"
-      class="w-[90%] h-fit md:w-[400px] max-w-[400px] rounded-lg"
+      class="w-[90%] h-fit md:w-[500px] max-w-[500px] rounded-lg"
       @drag-end="handleDragEnd"
     >
       <SpotlightCard color="rgba(255, 255, 255, 0.05)">

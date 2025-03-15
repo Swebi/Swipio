@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import SwipeCard from "@/components/SwipeCard.vue";
 import Toaster from "@/components/ui/toast/Toaster.vue";
 import { ref, onMounted } from "vue";
-import SpotlightCard from "./components/SpotlightCard.vue";
 
 const project = ref({});
 const loading = ref(true);
