@@ -11,7 +11,8 @@ const loading = ref(true);
 const fetchProject = async () => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_PUBLIC_SERVER_URL}/project`
+      // `${import.meta.env.VITE_PUBLIC_SERVER_URL}/project` // api endpoint
+      `${import.meta.env.VITE_PUBLIC_SERVER_URL}/idea` // redis endpoint
     );
     const data = await response.json();
 

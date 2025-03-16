@@ -2,7 +2,7 @@ import instance from "../config/axios.js";
 import { formatProject, getProjectConfig } from "../utils/utils.js";
 import { handleGetHackathon } from "./hackathon.service.js";
 
-const handleGetProject = async (request, reply) => {
+const handleGetProject = async (request, reply, retryCount = 0) => {
   try {
     const slug = await handleGetHackathon();
     console.log(`Fetching projects for ${slug}`);
@@ -15,9 +15,16 @@ const handleGetProject = async (request, reply) => {
 
     if (hits === 0) {
       console.log("0 Projects fetched");
+
+      retryCount++;
+
+      if (retryCount < 5) {
+        return await handleGetProject(request, reply, retryCount + 1);
+      }
+
       throw {
         statusCode: 404,
-        message: "Could not get project",
+        message: "No projects found",
       };
     }
 

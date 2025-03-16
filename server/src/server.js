@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 import Fastify from "fastify";
 import { hackathonRouter } from "./routes/hackathon.router.js";
 import { projectRouter } from "./routes/project.router.js";
+import { ideaRouter } from "./routes/idea.router.js";
+import { seed } from "./utils/seed.js";
 import cors from "@fastify/cors";
 
 dotenv.config();
@@ -22,6 +24,9 @@ fastify.get("/", (request, reply) => {
 
 fastify.register(hackathonRouter, { prefix: "/api/hackathon" });
 fastify.register(projectRouter, { prefix: "/api/project" });
+fastify.register(ideaRouter, { prefix: "/api/idea" });
+
+// seed(15);
 
 fastify.listen({ port: process.env.PORT }, (err, address) => {
   if (err) {
