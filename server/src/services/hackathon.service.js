@@ -9,7 +9,7 @@ const handleGetHackathon = async (request, reply) => {
     const hits = hitsResponse.data.hits.total.value;
     console.log(`Total hackathons fetched: ${hits}`);
 
-    const randomHit = Math.floor(Math.random() * (hits + 1));
+    const randomHit = Math.floor(Math.random() * hits);
     console.log(`Random Hit: ${randomHit}`);
 
     const hackathonConfig = getHackathonConfig(randomHit);

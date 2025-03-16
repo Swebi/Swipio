@@ -18,5 +18,5 @@ export async function initializeRedisClient() {
 
 export const redis = await initializeRedisClient();
 export const redisKey = "swipio";
-export const threshold = 5;
-export const refillCount = 15;
+export const threshold = 10;
+export const refillCount = 25;

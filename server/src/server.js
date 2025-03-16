@@ -26,7 +26,7 @@ fastify.register(hackathonRouter, { prefix: "/api/hackathon" });
 fastify.register(projectRouter, { prefix: "/api/project" });
 fastify.register(ideaRouter, { prefix: "/api/idea" });
 
-// seed(15);
+seed(50);
 
 fastify.listen({ port: process.env.PORT }, (err, address) => {
   if (err) {

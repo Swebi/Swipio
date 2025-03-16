@@ -4,8 +4,9 @@ import { handleGetProject } from "./project.service.js";
 
 const handleGetIdea = async (request, reply) => {
   try {
-    const queueLength = await redis.lLen(redisKey);
-    if (queueLength <= threshold) {
+    const cacheLength = await redis.lLen(redisKey);
+    if (cacheLength <= threshold) {
+      console.log("Cache size smaller than threshold, seeding");
       seed(refillCount);
     }
 
@@ -13,8 +14,11 @@ const handleGetIdea = async (request, reply) => {
     const rawProject = await redis.lPop(redisKey);
 
     if (!rawProject) {
+      console.log("Cache empty fetching from API");
+
       project = await handleGetProject(); // fetch from api
     } else {
+      // console.log("Returning from cache");
       project = JSON.parse(rawProject); // redis
     }
 

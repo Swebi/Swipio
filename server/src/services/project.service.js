@@ -18,7 +18,7 @@ const handleGetProject = async (request, reply, retryCount = 0) => {
 
       retryCount++;
 
-      if (retryCount < 5) {
+      if (retryCount < 10) {
         return await handleGetProject(request, reply, retryCount + 1);
       }
 
